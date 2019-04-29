@@ -4,6 +4,7 @@
 #include <png.h>
 #include <cairo-svg.h>
 #include<cairo-ps.h>
+#include <math.h>
 
 namespace helloWorld {
 
@@ -33,22 +34,51 @@ namespace helloWorld {
       // cairo_rectangle (cr, 250, 250, 250, 250);
       // cairo_stroke (cr);
 
-      // cairo_move_to(cr, 300, 10);
-      // cairo_set_source_rgb (cr, 0.69, 0.19, 0);
-      // cairo_set_line_width (cr, 30);
-      // cairo_line_to(cr, 400, 500);
-      // cairo_stroke (cr);
-
       // char and char * exchange
       char typeP = *type;
-      if(typeP == 'M'){
-        cairo_move_to(cr, d[0], d[1]);
-      }else if(typeP == 'L'){
-        cairo_line_to(cr, d[0], d[1]);
-      }else if(typeP == 'Z'){
-        cairo_close_path(cr);
-      }else if(typeP == 'C'){
-        cairo_curve_to(cr, d[0], d[1], d[2], d[3], d[4], d[5]);
+      switch(typeP){
+        case 'M' :
+          cairo_move_to(cr, d[0], d[1]);
+          break;
+        case 'm' :
+          cairo_rel_move_to(cr, d[0], d[1]);
+          break;
+        case 'L' :
+          cairo_line_to(cr, d[0], d[1]);
+          break;
+        case 'l' :
+          cairo_rel_line_to(cr, d[0], d[1]);
+          break;
+        case 'Z' :
+        case 'z' :
+          cairo_close_path(cr);
+          break;
+        case 'C' :
+          // cairo_new_sub_path(cr);
+          cairo_curve_to(cr, d[0], d[1], d[2], d[3], d[4], d[5]);
+          break;
+        case 'c' :
+          cairo_new_sub_path(cr);
+          cairo_rel_curve_to(cr, d[0], d[1], d[2], d[3], d[4], d[5]);
+          break;
+        case 'A' :
+        case 'a' :
+          cairo_save(cr);
+          // cairo_new_sub_path(cr);
+          // printf("获取路径类型on = %f \n", d[3]); 0,1
+
+          // d = [x1, y1, rotation, sweepFlag, radii_ratio, xc, yc, rx, startAngle, endAngle]
+          cairo_translate(cr, d[0], d[1]);
+          cairo_rotate(cr, d[2]);
+          cairo_scale (cr, 1, d[4]);
+          // sweep 为 1 cairo_arc， 为 0 为 cairo_arc_negative
+          if( d[3] == 1 ){
+            cairo_arc(cr, d[5], d[6], d[7], d[8], d[9]);
+          } else {
+            cairo_arc_negative(cr, d[5], d[6], d[7], d[8], d[9]);
+          }
+          cairo_restore (cr);
+          break;
       }
   }
 
@@ -83,7 +113,7 @@ namespace helloWorld {
             String::Utf8Value typevalue(isolate, type_value);
             std::string ststype(*typevalue, typevalue.length());
             const char *type = ststype.data();
-            printf("获取路径值值on = %s \n", type);
+            // printf("获取路径类型on = %s \n", type);
             // get paths
             Local<Array> paths = Local<Array>::Cast(data->Get(String::NewFromUtf8(isolate, "args")));
 
@@ -93,12 +123,14 @@ namespace helloWorld {
             for(int z = 0 ; z < plen; z++ ) {
               double dp = paths->Get(z)->NumberValue();
               path_ds[z] = dp;
-              printf("获取路径值值on = %f \n", dp);
+              // printf("获取路径值值on = %f \n", dp);
             }
 
             draw (cr, type, path_ds);
           }
-          cairo_stroke (cr);
+          // cairo_set_fill_rule (cr, CAIRO_FILL_RULE_EVEN_ODD);
+          cairo_fill (cr);
+          // cairo_stroke (cr);
       }
 
       /* Write output and clean up */
