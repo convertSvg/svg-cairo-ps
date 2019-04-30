@@ -3,7 +3,8 @@
 #include <cairo.h>
 #include <png.h>
 #include <cairo-svg.h>
-#include<cairo-ps.h>
+#include <cairo-ps.h>
+#include <cairo-pdf.h>
 #include <math.h>
 
 namespace helloWorld {
@@ -65,8 +66,7 @@ namespace helloWorld {
         case 'a' :
           cairo_save(cr);
           // cairo_new_sub_path(cr);
-          // printf("获取路径类型on = %f \n", d[3]); 0,1
-
+          
           // d = [x1, y1, rotation, sweepFlag, radii_ratio, xc, yc, rx, startAngle, endAngle]
           cairo_translate(cr, d[0], d[1]);
           cairo_rotate(cr, d[2]);
@@ -83,7 +83,7 @@ namespace helloWorld {
   }
 
 
-  int cairo_factory (const char *file_name, const int size, Local<Array> path_value, Isolate* isolate){
+  int cairo_factory (const char *file_name, const char *format_value, const int size, Local<Array> path_value, Isolate* isolate){
     // env
       cairo_surface_t *surface;
       cairo_t *cr;
@@ -91,8 +91,20 @@ namespace helloWorld {
       int width = size;
       int height = size;
 
-      // surface = cairo_ps_surface_create (file_name, width, height);
-      surface = cairo_svg_surface_create (file_name, width, height);
+      if (strcmp(format_value, "svg") == 0) {
+        surface = cairo_svg_surface_create (file_name, width, height);
+      } else if(strcmp(format_value, "ps") == 0){
+        surface = cairo_ps_surface_create (file_name, width, height);
+      } else if(strcmp(format_value, "pdf") == 0){
+        surface = cairo_pdf_surface_create (file_name, width, height);
+      } else if(strcmp(format_value, "png") == 0){
+        surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
+      } else {
+        isolate->ThrowException(Exception::TypeError(
+            String::NewFromUtf8(isolate, "This format is not supported")));
+        return 0;        
+      }
+
       cr = cairo_create (surface);
 
       int len = path_value->Length();
@@ -134,6 +146,10 @@ namespace helloWorld {
       }
 
       /* Write output and clean up */
+      if(strcmp(format_value, "png") == 0){
+        cairo_surface_write_to_png(surface, file_name);
+      }
+      
       cairo_destroy (cr);
       cairo_surface_destroy (surface);
     return 0;
@@ -174,8 +190,12 @@ namespace helloWorld {
 
     // 根据 key 获取对象中的值
     Local<Number> size_value = Local<Number>::Cast(path_object->Get(String::NewFromUtf8(isolate, "size")));
+    Local<String> type_value = Local<String>::Cast(path_object->Get(String::NewFromUtf8(isolate, "type")));
     Local<Array> path_value = Local<Array>::Cast(path_object->Get(String::NewFromUtf8(isolate, "paths")));
     int size = size_value->NumberValue();
+    String::Utf8Value format(isolate, type_value);
+    std::string formatssr(*format, format.length());
+    const char *format_value = formatssr.data();
 
     // 路径长度检测
     if (path_value -> Length() == 0) {
@@ -184,7 +204,7 @@ namespace helloWorld {
         return ;
     }
 
-    cairo_factory(file_name, size, path_value, isolate);
+    cairo_factory(file_name, format_value, size, path_value, isolate);
     // printf("%d, %f %f\n", path_value->Length(), path_value->Get(0)->NumberValue(), path_value->Get(1)->IntegerValue());
 
     // args.GetReturnValue().Set(size_value);
@@ -194,7 +214,6 @@ namespace helloWorld {
 
   static void init(Local<Object> exports) {
     // NODE_SET_METHOD(module, "exports", HelloWorld);
-    // exports.Parse为Parse函数
     NODE_SET_METHOD(exports, "parse", Parse);
   }
 
