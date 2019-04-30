@@ -28,10 +28,14 @@ const { pathParse, serializePath } = require('svg-path-parse')
 // 贝塞尔曲线 cairo_curve_to()   cairo_rel_curve_to ()    => C/c、Q/q、T/t、S/s
 // cairo_close_path()   => Z/z
 
-// support svg、png、PostScript(ps)、Encapsulated PostScript(eps)、pdf
-const command = 'M80 80C 40 10, 65 10, 95 80A45 45 0 0 0 125 140L125 95ZM230 80A45 45 0 1 0 275 130L275 115ZM80 230A45 45 0 0 1 125 275L125 230ZM230 230A45 45 0 1 1 275 275L275 230ZM10 10 h 80 v 80 h -80 Z'
+// support svg, png, PostScript(ps), Encapsulated PostScript(eps), pdf
+const command = 'M10 80 Q 52.5 10, 95 80 T 180 80'
 
 const pathDatas = pathParse(command).absCairo({
+  round: 2
+})
+
+const pathDat = pathParse('M230 230A 45 45, 0, 1, 1, 275 275L 275 230 Z').absCairo({
   round: 2
 })
 const { segments } = pathDatas
@@ -39,12 +43,18 @@ const { segments } = pathDatas
 // console.error('segments', segments)
 
 Parse('test.eps', {
-  paths: [{
-    d: segments
-  }],
+  paths: [
+    {
+      d: segments,
+      mode: 'stroke'
+    },
+    {
+      d: pathDat.segments,
+      mode: 'fill'
+    }
+  ],
   size: 1024
 })
-
 ```
 
 
