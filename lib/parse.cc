@@ -49,18 +49,15 @@ namespace helloWorld {
           cairo_close_path(cr);
           break;
         case 'C' :
-          // cairo_new_sub_path(cr);
           cairo_curve_to(cr, d[0], d[1], d[2], d[3], d[4], d[5]);
           break;
         case 'c' :
-          cairo_new_sub_path(cr);
           cairo_rel_curve_to(cr, d[0], d[1], d[2], d[3], d[4], d[5]);
           break;
         case 'A' :
         case 'a' :
           cairo_save(cr);
-          // cairo_new_sub_path(cr);
-          
+
           // d = [x1, y1, rotation, sweepFlag, radii_ratio, xc, yc, rx, startAngle, endAngle]
           cairo_translate(cr, d[0], d[1]);
           cairo_rotate(cr, d[2]);
@@ -96,7 +93,7 @@ namespace helloWorld {
       } else {
         isolate->ThrowException(Exception::TypeError(
             String::NewFromUtf8(isolate, "This format is not supported")));
-        return 0;        
+        return 0;
       }
 
       cr = cairo_create (surface);
@@ -137,7 +134,7 @@ namespace helloWorld {
             Local<Array> paths = Local<Array>::Cast(data->Get(String::NewFromUtf8(isolate, "args")));
 
             // V8 类型数组转换 C 语言数组
-            int plen = paths->Length(); 
+            int plen = paths->Length();
             double path_ds [plen];
             for(int z = 0 ; z < plen; z++ ) {
               double dp = paths->Get(z)->NumberValue();
@@ -150,8 +147,8 @@ namespace helloWorld {
 
           // cairo_set_fill_rule (cr, CAIRO_FILL_RULE_EVEN_ODD);
           if (strcmp(style, "stroke") == 0) {
-            cairo_stroke (cr);
             cairo_set_line_width (cr, 1);
+            cairo_stroke (cr);
           } else {
             cairo_fill (cr);
           }
@@ -161,7 +158,7 @@ namespace helloWorld {
       if(strcmp(format_value, "png") == 0){
         cairo_surface_write_to_png(surface, file_name);
       }
-      
+
       cairo_destroy (cr);
       cairo_surface_destroy (surface);
 
