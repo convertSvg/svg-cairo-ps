@@ -111,10 +111,19 @@ namespace helloWorld {
           const char *style = modessr.data();
 
           Local<Array> d = Local<Array>::Cast(obj->Get(String::NewFromUtf8(isolate, "d")));
-          
           int dlen = d->Length();
 
-          cairo_set_source_rgba (cr, 0, 0, 0, 1);
+          // colors
+          Local<Array> color_value = Local<Array>::Cast(obj->Get(String::NewFromUtf8(isolate, "color")));
+          int clen = color_value->Length();
+          double colors [clen];
+          for(int c = 0; c < clen; c++ ) {
+            double cc = color_value->Get(c)->NumberValue();
+            colors[c] = cc;
+          }
+
+          cairo_set_source_rgba (cr, colors[0], colors[1], colors[2], colors[3]);
+
           for(int j = 0 ; j < dlen; j++ ) {
             Local<Object> data = Local<Object>::Cast(d->Get(j));
 
@@ -138,6 +147,7 @@ namespace helloWorld {
 
             draw (cr, type, path_ds);
           }
+
           // cairo_set_fill_rule (cr, CAIRO_FILL_RULE_EVEN_ODD);
           if (strcmp(style, "stroke") == 0) {
             cairo_stroke (cr);

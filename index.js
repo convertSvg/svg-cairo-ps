@@ -21,15 +21,17 @@ const { segments } = pathDatas
 // console.log('pathDatas', serializePath(pathDatas))
 // console.error('segments', segments)
 
-Parse('test.eps', {
+Parse('test.svg', {
   paths: [
     {
       d: segments,
-      mode: 'stroke'
+      mode: 'stroke',
+      color: 'red'
     },
     {
       d: pathDat.segments,
-      mode: 'fill'
+      mode: 'fill',
+      color: '#fec'
     }
   ],
   size: 1024
