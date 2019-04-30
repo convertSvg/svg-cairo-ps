@@ -29,12 +29,6 @@ namespace helloWorld {
       // cairo_set_line_width (cr, 30);
       // cairo_line_to(cr, 100, 100);
 
-      // /* Drawing code goes here */
-      // cairo_set_line_width (cr, 10);
-      // cairo_set_source_rgba (cr, 0.3, 0.4, 0.6, 1);
-      // cairo_rectangle (cr, 250, 250, 250, 250);
-      // cairo_stroke (cr);
-
       // char and char * exchange
       char typeP = *type;
       switch(typeP){
@@ -108,7 +102,6 @@ namespace helloWorld {
       cr = cairo_create (surface);
 
       int len = path_value->Length();
-      //printf("获取路径值值on = %d \n", len);
 
       for(int i = 0 ; i < len; i++ ) {
           Local<Object> obj = Local<Object>::Cast(path_value->Get(i));
@@ -213,7 +206,7 @@ namespace helloWorld {
   }
 
   static void init(Local<Object> exports) {
-    // NODE_SET_METHOD(module, "exports", HelloWorld);
+    // exports.Parse = { parse}
     NODE_SET_METHOD(exports, "parse", Parse);
   }
 
