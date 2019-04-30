@@ -65,7 +65,7 @@ namespace helloWorld {
           cairo_translate(cr, d[0], d[1]);
           cairo_rotate(cr, d[2]);
           cairo_scale (cr, 1, d[4]);
-          // sweep 为 1 cairo_arc， 为 0 为 cairo_arc_negative
+          // sweep equal to 1 is cairo_arc， equal to 0 is cairo_arc_negative
           if( d[3] == 1 ){
             cairo_arc(cr, d[5], d[6], d[7], d[8], d[9]);
           } else {
@@ -77,7 +77,7 @@ namespace helloWorld {
   }
 
 
-  int cairo_factory (const char *file_name, const char *format_value, const int size, Local<Array> path_value, Isolate* isolate){
+  int cairo_factory (const char *file_name, const char *format_value, const int size,  Local<Array> path_value, Isolate* isolate){
     // env
       cairo_surface_t *surface;
       cairo_t *cr;
@@ -105,8 +105,13 @@ namespace helloWorld {
 
       for(int i = 0 ; i < len; i++ ) {
           Local<Object> obj = Local<Object>::Cast(path_value->Get(i));
-          // Local<Number> pid = Local<Number>::Cast(obj->Get(String::NewFromUtf8(isolate, "pid")));
+          Local<String> mode_value = Local<String>::Cast(obj->Get(String::NewFromUtf8(isolate, "mode")));
+          String::Utf8Value mode(isolate, mode_value);
+          std::string modessr(*mode, mode.length());
+          const char *style = modessr.data();
+
           Local<Array> d = Local<Array>::Cast(obj->Get(String::NewFromUtf8(isolate, "d")));
+          
           int dlen = d->Length();
 
           cairo_set_source_rgba (cr, 0, 0, 0, 1);
@@ -123,7 +128,7 @@ namespace helloWorld {
             Local<Array> paths = Local<Array>::Cast(data->Get(String::NewFromUtf8(isolate, "args")));
 
             // V8 类型数组转换 C 语言数组
-            int plen = paths->Length();
+            int plen = paths->Length(); 
             double path_ds [plen];
             for(int z = 0 ; z < plen; z++ ) {
               double dp = paths->Get(z)->NumberValue();
@@ -134,8 +139,12 @@ namespace helloWorld {
             draw (cr, type, path_ds);
           }
           // cairo_set_fill_rule (cr, CAIRO_FILL_RULE_EVEN_ODD);
-          cairo_fill (cr);
-          // cairo_stroke (cr);
+          if (strcmp(style, "stroke") == 0) {
+            cairo_stroke (cr);
+            cairo_set_line_width (cr, 1);
+          } else {
+            cairo_fill (cr);
+          }
       }
 
       /* Write output and clean up */
@@ -145,6 +154,7 @@ namespace helloWorld {
       
       cairo_destroy (cr);
       cairo_surface_destroy (surface);
+
     return 0;
   };
 
@@ -185,7 +195,9 @@ namespace helloWorld {
     Local<Number> size_value = Local<Number>::Cast(path_object->Get(String::NewFromUtf8(isolate, "size")));
     Local<String> type_value = Local<String>::Cast(path_object->Get(String::NewFromUtf8(isolate, "type")));
     Local<Array> path_value = Local<Array>::Cast(path_object->Get(String::NewFromUtf8(isolate, "paths")));
+
     int size = size_value->NumberValue();
+
     String::Utf8Value format(isolate, type_value);
     std::string formatssr(*format, format.length());
     const char *format_value = formatssr.data();
