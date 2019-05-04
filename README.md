@@ -5,6 +5,12 @@ This is a small library to normalise SVG paths use cairo convert to PostScript (
 Note: this package works with [path data](https://www.w3.org/TR/SVG11/paths.html#PathData) strings, [Cairo](https://cairographics.org/) and [CairoSVG](https://github.com/Kozea/CairoSVG),
 not with full svg xml sources.
 
+## Install 
+
+```
+npm install svg-cairo-ps
+```
+
 ## Explain
 
 ```js
