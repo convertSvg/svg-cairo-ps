@@ -20,14 +20,13 @@ const pathDat = pathParse('M230 230A 45 45, 0, 1, 1, 275 275L 275 230 Z').absCai
 })
 const { segments } = pathDatas
 // console.log('pathDatas', serializePath(pathDatas))
-console.error('segments', segments)
+// console.error('segments', segments)
 
 // fill: #ddd, stroke: red, stroke-width: 2, stroke-linecap: "butt", fill-rule:nonzero
-Parse('test.svg', {
+Parse('test.png', {
   paths: [
     {
       d: segments,
-      color: 'red',
       attributes: {
         fill: 'red',
         stroke: '#000',

@@ -2,7 +2,7 @@
 
 This is a small library to normalise SVG paths use cairo convert to PostScript (ps), Encapsulated PostScript (eps), PDF, SVG, PNG.
 
-Note: this package works with [path data](https://www.w3.org/TR/SVG11/paths.html#PathData) strings and [Cairo](https://cairographics.org/),
+Note: this package works with [path data](https://www.w3.org/TR/SVG11/paths.html#PathData) strings, [Cairo](https://cairographics.org/) and [CairoSVG](https://github.com/Kozea/CairoSVG),
 not with full svg xml sources.
 
 ## Explain
@@ -45,11 +45,14 @@ Parse('test.eps', {
   paths: [
     {
       d: segments,
-      mode: 'stroke'
-    },
-    {
-      d: pathDat.segments,
-      mode: 'fill'
+      // support fill, stroke, stroke-width, stroke-linecap, fill-rule
+      attributes: {
+        fill: 'red',
+        'fill-rule': 'nonzero',
+        stroke: '#000',
+        'stroke-width': 2,
+        'stroke-linecap': 'butt'
+      }
     }
   ],
   size: 1024
