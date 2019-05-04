@@ -1,7 +1,6 @@
 ## svg-cairo-ps
 
-This is a small library to normalise SVG paths use cairo convert to PostScript (ps), Encapsulated PostScript (eps), PDF, SVG, PNG
-.
+This is a small library to normalise SVG paths use cairo convert to PostScript (ps), Encapsulated PostScript (eps), PDF, SVG, PNG.
 
 Note: this package works with [path data](https://www.w3.org/TR/SVG11/paths.html#PathData) strings and [Cairo](https://cairographics.org/),
 not with full svg xml sources.
