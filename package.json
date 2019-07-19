@@ -6,7 +6,9 @@
   "scripts": {
     "install": "node-gyp rebuild",
     "lint": "eslint ./src --fix",
-    "start": "node index.js"
+    "start": "node index.js",
+    "rebuild:dev": "node-gyp rebuild --debug",
+    "clean": "node-gyp clean"
   },
   "husky": {
     "hooks": {
