@@ -2,7 +2,7 @@
   "name": "svg-cairo-ps",
   "version": "0.0.1",
   "description": "This is a small library to normalise SVG paths use cairo convert to postscript.",
-  "main": "./lib/path_parse.js",
+  "main": "./lib/index.js",
   "scripts": {
     "lint": "eslint ./src --fix",
     "start": "node index.js"

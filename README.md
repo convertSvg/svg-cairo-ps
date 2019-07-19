@@ -24,7 +24,7 @@ npm install svg-cairo-ps
 ## Example
 
 ``` js
-const Parse = require('./lib/index.js')
+const Parse = require('svg-cairo-ps')
 const { pathParse, serializePath } = require('svg-path-parse')
 
 // cairo_move_to   cairo_rel_move_to ()   => M/m
