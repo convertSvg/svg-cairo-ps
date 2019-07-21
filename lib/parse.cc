@@ -96,6 +96,8 @@ namespace helloWorld {
       int len = path_value->Length();
 
       for(int i = 0 ; i < len; i++ ) {
+          cairo_new_path(cr); // create new path
+
           Local<Object> obj = Local<Object>::Cast(path_value->Get(i));
 
           Local<Object> attributes = Local<Object>::Cast(obj->Get(String::NewFromUtf8(isolate, "attributes")));
