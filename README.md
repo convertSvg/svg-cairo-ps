@@ -172,5 +172,5 @@ Parse('test.eps', {
 
 
 
-> 注意， relcairo 存在问题
+
 
