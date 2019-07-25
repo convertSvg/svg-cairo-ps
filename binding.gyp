@@ -7,7 +7,9 @@
         '<!@(pkg-config cairo --libs)',
         '<!@(pkg-config libpng --libs)'
       ],
-      "include_dirs": ['<!@(pkg-config cairo --cflags-only-I | sed s/-I//g)', '<!@(pkg-config libpng --cflags-only-I | sed s/-I//g)',],
+      "include_dirs": ['<!@(pkg-config cairo --cflags-only-I | sed s/-I//g)', '<!@(pkg-config libpng --cflags-only-I | sed s/-I//g)'],
+      "cflags!": ['-fno-exceptions'],
+      "cflags_cc!": ['-fno-exceptions']
     }
   ]
 }
