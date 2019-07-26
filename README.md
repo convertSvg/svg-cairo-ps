@@ -34,6 +34,11 @@ Others | Reference material the [wiki](https://github.com/Automattic/node-canvas
 **Mac OS X v10.11+:** If you have recently updated to Mac OS X v10.11+ and are experiencing trouble when compiling, run the following command: `xcode-select --install`. Read more about the problem [on Stack Overflow](http://stackoverflow.com/a/32929012/148072).
 If you have xcode 10.0 or higher installed, in order to build from source you need NPM 6.4.1 or higher.
 
+
+Note the setting pkg-config
+Pkg-config environment variable, `export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig"`.
+
+
 ## Explain
 
 ```js
@@ -172,5 +177,5 @@ Parse('test.eps', {
 
 
 
-
+> 注意， relcairo 存在问题
 
